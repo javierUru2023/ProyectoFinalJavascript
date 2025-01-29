@@ -1,3 +1,34 @@
+// Función para obtener la cotización del dólar a UYU
+function fetchExchangeRate() {
+    const apiKey = '5f94cecde3524e4499f7161ecc5e6b11'; // Reemplaza con tu clave de API de Open Exchange Rates
+    const url = `https://openexchangerates.org/api/latest.json?app_id=${apiKey}&symbols=UYU&base=USD`;
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
+            }
+            return response.json(); // Intentamos convertir la respuesta en JSON
+        })
+        .then(data => {
+            if (data && data.rates && data.rates.UYU) {
+                const exchangeRate = data.rates.UYU;
+                document.getElementById('exchange-rate').innerText = `Dólar: $${exchangeRate}`;
+            } else {
+                document.getElementById('exchange-rate').innerText = 'Tasa de cambio no disponible';
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener la cotización:', error);
+            document.getElementById('exchange-rate').innerText = 'Error al cargar la cotización';
+        });
+}
+
+// Inicializar la página
+document.addEventListener('DOMContentLoaded', () => {
+    fetchExchangeRate(); // Llamada inicial para obtener la cotización
+    setInterval(fetchExchangeRate, 60000); // Actualiza la cotización cada 60 segundos
+});
 
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let productos = {}; // Para almacenar los productos cargados desde JSON
@@ -135,3 +166,9 @@ function init() {
 }
 
 init(); // Llamamos a la función de inicialización
+
+
+
+
+
+
